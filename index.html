@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Working Timetable</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="js/jquery-1.10.2.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+
+<script>
+//scheduling script
+var head = document.getElementsByTagName('head')[0];
+var js = document.createElement("script");
+var TimetableChangeDate = new Date("11/19/2017");
+var todaysDate = new Date();
+todaysDate.setHours(0,0,0,0);
+
+// Check if today is past the timetable change date
+if(todaysDate < TimetableChangeDate)
+{
+    js.src = "timetabledata002.js";
+}
+else
+{
+    js.src = "timetabledata003.js";
+}
+head.appendChild(js);
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-83419656-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+	<script type="text/javascript">
+	function startTime() {
+	var today = new Date();
+	var h = today.getHours();
+	var m = today.getMinutes();
+	var s = today.getSeconds();
+	h = checkTime(h)
+	m = checkTime(m);
+	s = checkTime(s);
+	document.getElementById('clock').innerHTML =
+	h + ":" + m + ":" + s;
+	document.getElementById('timetableupdated').innerHTML = timetableupdated
+
+	$('td[id^="time"]').each(function(i) {
+		var checktime1 = this.innerHTML
+		var checktime2 = h + ":" + m + ":" + s
+		if (checktime2 > checktime1) {
+		  this.style.color = "red";
+		} else {
+
+		}
+	});
+	var t = setTimeout(startTime, 500);
+	}
+	function checkTime(i) {
+		if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+		return i;
+	}
+	
+	function ThisService(ServiceNo) {
+		document.getElementById('search').value = ServiceNo;
+		$('#search').keyup();
+	}
+	
+	function dateCompare(time1,time2) {
+	  var t1 = new Date();
+	  var parts = time1.split(":");
+	  t1.setHours(parts[0],parts[1],parts[2],0);
+	  var t2 = new Date();
+	  parts = time2.split(":");
+	  t2.setHours(parts[0],parts[1],parts[2],0);
+
+	  // returns 1 if greater, -1 if less and 0 if the same
+	  if (t1.getTime()>t2.getTime()) return 1;
+	  if (t1.getTime()<t2.getTime()) return -1;
+	  return 0;
+	}
+
+      $(window).load(function(){
+        $('#search').keyup(function(){
+		
+            var searchField = $('#search').val();
+			var searchFieldLength = searchField.length
+            var myExp = new RegExp(searchField, "i");
+            var output = '<div>';
+			
+			if (searchFieldLength < 4) {
+              $.each(timetabledata, function(key, val){
+                if (val.service_id.search(myExp) != -1) {
+				  if(val.order == 0){
+					output += '<h2 onclick="ThisService(' + val.service_id + ')">' + val.service_id + '</h2>';
+				  }
+				output += '</div>';
+			}})}
+			if (searchFieldLength > 3) {
+			
+              $.each(timetabledata, function(key, val){
+                if (val.service_id.search(myExp) != -1) {
+					
+				  if(val.order == 0){
+					output += '<h2 onclick="ThisService(' + val.service_id + ')">' + val.service_id + '</h2>';
+					output += '<table class="table table-condensed">';
+                    output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Timetable</th></tr></thead>';
+                  }
+                  output += '<tr><td>' + val.station + '</td><td id="time">' + val.time + '</td></tr>';
+
+                }
+              });
+              output += '</table></div>';
+			  $('#search').blur();
+			  
+			  };
+              $('#results').html(output);
+
+        });
+      });
+	  
+	  $(document).ready(function() {
+    $('#search').keydown(function(event) {
+        if (event.keyCode == 13) {
+            $('#search').blur();
+			$('#results').focus();
+         }
+    });
+	});
+
+	</script>
+</head>
+
+<body onload="startTime()">
+
+<style>
+body {
+	background: url(img/background.jpg) no-repeat center center fixed;
+	-webkit-background-size: contain;
+	-moz-background-size: contain;
+	-o-background-size: contain;
+	background-size: contain;
+}
+</style>
+
+<div class="text-center">   
+	<div style="font-size:75px">
+	<div id="clock" style="position:fixed;width:100%;top:0px;height:115px;background-color:white"></div>
+	</div>
+
+	<form role="form">
+			<div class="form-group">
+			  <input type="number" class="form-control input-lg" id="search" placeholder="enter service number" style="margin-top:115px; box-sizing: border-box; margin-left: 10px; margin-right: 10px; width: calc(100% - 20px);">
+			</div>
+	</form>
+
+	<div id="results"></div>
+	<div id="timetableupdated" style="font-size:10px" ></div>
+
+</div>	</body>
+	
+</div>
+
+</body>
+</html>
