@@ -103,12 +103,14 @@ head.appendChild(js);
               $.each(timetabledata, function(key, val){
                 if (val.serviceId.search(myExp) != -1) {
 									if(val.order == 0){
+										output += '<p>' + val.fareType + ' fares</p>';
+										if(val.bikeExclusion){
+											output += '<strong><p>Bikes cannot be carried on this service</p></strong>';
+										}
 										if(val.crossingBoolean){
-											output += '<p>' + val.fareType + ' fares</p>';
 										output += '<table class="table table-condensed">';
 										output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Crossing</th><th style="text-align:center">Timetable</th></tr></thead>';
 										} else {
-											output += '<p>' + val.fareType + ' fares</p>';
 										output += '<table class="table table-condensed">';
 										output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Timetable</th></tr></thead>';
 										};
