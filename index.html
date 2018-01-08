@@ -16,14 +16,10 @@ var js = document.createElement("script");
 var TimetableChangeDate = new Date("11/19/2017");
 var todaysDate = new Date();
 todaysDate.setHours(0,0,0,0);
-
 // Check if today is past the timetable change date
-if(todaysDate < TimetableChangeDate)
-{
+if(todaysDate < TimetableChangeDate){
     js.src = "timetabledata002.js";
-}
-else
-{
+} else {
     js.src = "timetabledata003.js";
 }
 head.appendChild(js);
@@ -97,24 +93,31 @@ head.appendChild(js);
 			
 			if (searchFieldLength < 4) {
               $.each(timetabledata, function(key, val){
-                if (val.service_id.search(myExp) != -1) {
+                if (val.serviceId.search(myExp) != -1) {
 				  if(val.order == 0){
-					output += '<h2 onclick="ThisService(' + val.service_id + ')">' + val.service_id + '</h2>';
+					output += '<h2 onclick="ThisService(' + val.serviceId + ')">' + val.serviceId + '</h2>';
 				  }
 				output += '</div>';
 			}})}
 			if (searchFieldLength > 3) {
-			
               $.each(timetabledata, function(key, val){
-                if (val.service_id.search(myExp) != -1) {
-					
-				  if(val.order == 0){
-					output += '<h2 onclick="ThisService(' + val.service_id + ')">' + val.service_id + '</h2>';
-					output += '<table class="table table-condensed">';
-                    output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Timetable</th></tr></thead>';
-                  }
-                  output += '<tr><td>' + val.station + '</td><td id="time">' + val.time + '</td></tr>';
-
+                if (val.serviceId.search(myExp) != -1) {
+									if(val.order == 0){
+										if(val.crossingBoolean){
+											output += '<p>' + val.fareType + ' fares</p>';
+										output += '<table class="table table-condensed">';
+										output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Crossing</th><th style="text-align:center">Timetable</th></tr></thead>';
+										} else {
+											output += '<p>' + val.fareType + ' fares</p>';
+										output += '<table class="table table-condensed">';
+										output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Timetable</th></tr></thead>';
+										};
+									}
+									if(val.crossingBoolean){
+										output += '<tr><td>' + val.stationId + '</td><td id="time">' + val.crossingDetail + '</td><td id="time">' + val.time + '</td></tr>';
+									} else {
+										output += '<tr><td>' + val.stationId + '</td><td id="time">' + val.time + '</td></tr>';
+									};
                 }
               });
               output += '</table></div>';
