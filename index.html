@@ -37,27 +37,25 @@ head.appendChild(js);
   
 	<script type="text/javascript">
 	function startTime() {
-	var today = new Date();
-	var h = today.getHours();
-	var m = today.getMinutes();
-	var s = today.getSeconds();
-	h = checkTime(h)
-	m = checkTime(m);
-	s = checkTime(s);
-	document.getElementById('clock').innerHTML =
-	h + ":" + m + ":" + s;
-	document.getElementById('timetableupdated').innerHTML = timetableupdated
+		var today = new Date();
+		var h = today.getHours();
+		var m = today.getMinutes();
+		var s = today.getSeconds();
+		h = checkTime(h)
+		m = checkTime(m);
+		s = checkTime(s);
+		document.getElementById('clock').innerHTML =
+		h + ":" + m + ":" + s;
+		document.getElementById('timetableupdated').innerHTML = timetableupdated
 
-	$('td[id^="time"]').each(function(i) {
-		var checktime1 = this.innerHTML
-		var checktime2 = h + ":" + m + ":" + s
-		if (checktime2 > checktime1) {
-		  this.style.color = "red";
-		} else {
-
-		}
-	});
-	var t = setTimeout(startTime, 500);
+		$('td[id^="time"]').each(function(i) {
+			var checktime1 = this.innerHTML
+			var checktime2 = h + ":" + m + ":" + s
+			if (checktime2 > checktime1) {
+				this.style.color = "red";
+			}
+		});
+		var t = setTimeout(startTime, 500);
 	}
 	function checkTime(i) {
 		if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
@@ -76,7 +74,6 @@ head.appendChild(js);
 	  var t2 = new Date();
 	  parts = time2.split(":");
 	  t2.setHours(parts[0],parts[1],parts[2],0);
-
 	  // returns 1 if greater, -1 if less and 0 if the same
 	  if (t1.getTime()>t2.getTime()) return 1;
 	  if (t1.getTime()<t2.getTime()) return -1;
@@ -100,33 +97,32 @@ head.appendChild(js);
 				output += '</div>';
 			}})}
 			if (searchFieldLength > 3) {
-              $.each(timetabledata, function(key, val){
-                if (val.serviceId.search(myExp) != -1) {
-									if(val.order == 0){
-										output += '<p>' + val.fareType + ' fares</p>';
-										if(val.bikeExclusion){
-											output += '<strong><p>Bikes cannot be carried on this service</p></strong>';
-										}
-										if(val.crossingBoolean){
-										output += '<table class="table table-condensed">';
-										output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Crossing</th><th style="text-align:center">Timetable</th></tr></thead>';
-										} else {
-										output += '<table class="table table-condensed">';
-										output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Timetable</th></tr></thead>';
-										};
-									}
-									if(val.crossingBoolean){
-										output += '<tr><td>' + val.stationId + '</td><td id="time">' + val.crossingDetail + '</td><td id="time">' + val.time + '</td></tr>';
-									} else {
-										output += '<tr><td>' + val.stationId + '</td><td id="time">' + val.time + '</td></tr>';
-									};
-                }
-              });
-              output += '</table></div>';
-			  $('#search').blur();
-			  
+					$.each(timetabledata, function(key, val){
+						if (val.serviceId.search(myExp) != -1) {
+							if(val.order == 0){
+								output += '<p>' + val.fareType + ' fares</p>';
+								if(val.bikeExclusion){
+									output += '<strong><p>Bikes cannot be carried on this service</p></strong>';
+								}
+								if(val.crossingBoolean){
+									output += '<table class="table table-condensed">';
+									output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Crossing</th><th style="text-align:center">Timetable</th></tr></thead>';
+								} else {
+									output += '<table class="table table-condensed">';
+									output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Timetable</th></tr></thead>';
+								};
+							}
+							if(val.crossingBoolean){
+								output += '<tr><td>' + val.stationId + '</td><td id="time">' + val.crossingDetail + '</td><td id="time">' + val.time + '</td></tr>';
+							} else {
+								output += '<tr><td>' + val.stationId + '</td><td id="time">' + val.time + '</td></tr>';
+							};
+						}
+					});
+					output += '</table></div>';
+			  	$('#search').blur();
 			  };
-              $('#results').html(output);
+        $('#results').html(output);
 
         });
       });
@@ -134,8 +130,8 @@ head.appendChild(js);
 	  $(document).ready(function() {
     $('#search').keydown(function(event) {
         if (event.keyCode == 13) {
-            $('#search').blur();
-			$('#results').focus();
+          $('#search').blur();
+					$('#results').focus();
          }
     });
 	});
@@ -144,34 +140,27 @@ head.appendChild(js);
 </head>
 
 <body onload="startTime()">
+	<style>
+		body {
+			background: url(img/background.jpg) no-repeat center center fixed;
+			-webkit-background-size: contain;
+			-moz-background-size: contain;
+			-o-background-size: contain;
+			background-size: contain;
+		}
+	</style>
 
-<style>
-body {
-	background: url(img/background.jpg) no-repeat center center fixed;
-	-webkit-background-size: contain;
-	-moz-background-size: contain;
-	-o-background-size: contain;
-	background-size: contain;
-}
-</style>
-
-<div class="text-center">   
-	<div style="font-size:75px">
-	<div id="clock" style="position:fixed;width:100%;top:0px;height:115px;background-color:white"></div>
-	</div>
-
-	<form role="form">
+	<div class="text-center">
+		<div style="font-size:75px">
+			<div id="clock" style="position:fixed;width:100%;top:0px;height:115px;background-color:white"></div>
+		</div>
+		<form role="form">
 			<div class="form-group">
-			  <input type="number" class="form-control input-lg" id="search" placeholder="enter service number" style="margin-top:115px; box-sizing: border-box; margin-left: 10px; margin-right: 10px; width: calc(100% - 20px);">
+				<input type="number" class="form-control input-lg" id="search" placeholder="enter service number" style="margin-top:115px; box-sizing: border-box; margin-left: 10px; margin-right: 10px; width: calc(100% - 20px);">
 			</div>
-	</form>
-
-	<div id="results"></div>
-	<div id="timetableupdated" style="font-size:10px" ></div>
-
-</div>	</body>
-	
-</div>
-
+		</form>
+		<div id="results"></div>
+		<div id="timetableupdated" style="font-size:10px" ></div>
+	</div>
 </body>
 </html>
