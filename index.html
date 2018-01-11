@@ -10,6 +10,7 @@
   <script src="js/bootstrap.min.js"></script>
 
 <script>
+
 //scheduling script
 var head = document.getElementsByTagName('head')[0];
 var js = document.createElement("script");
@@ -20,7 +21,7 @@ todaysDate.setHours(0,0,0,0);
 if(todaysDate < TimetableChangeDate){
     js.src = "timetabledata002.js";
 } else {
-    js.src = "timetabledata003.js";
+    js.src = "timetabledata_10012018.js";
 }
 head.appendChild(js);
 </script>
@@ -80,9 +81,27 @@ head.appendChild(js);
 	  return 0;
 	}
 
+//get param from url for service number
+function getParamValue(paramName){
+    var url = window.location.search.substring(1); //get rid of "?" in querystring
+    var qArray = url.split('&'); //get key-value pairs
+    for (var i = 0; i < qArray.length; i++) 
+    {
+        var pArr = qArray[i].split('='); //split key and value
+        if (pArr[0] == paramName) 
+            return pArr[1]; //return value
+    }
+}
+var initServiceId = getParamValue('serviceId');
+
+function takeInitServiceId(){
+if (typeof(initServiceId) !== "undefined"){
+	ThisService(initServiceId);
+};
+};
+
       $(window).load(function(){
         $('#search').keyup(function(){
-		
             var searchField = $('#search').val();
 			var searchFieldLength = searchField.length
             var myExp = new RegExp(searchField, "i");
@@ -139,7 +158,7 @@ head.appendChild(js);
 	</script>
 </head>
 
-<body onload="startTime()">
+<body onload="startTime(); takeInitServiceId();">
 	<style>
 		body {
 			background: url(img/background.jpg) no-repeat center center fixed;
