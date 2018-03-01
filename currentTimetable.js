@@ -6,9 +6,9 @@ function getCurrentTimetable() {
     todaysDate.setHours(0,0,0,0);
     // Check if today is past the timetable change date
     if(todaysDate < TimetableChangeDate){
-        return "timetabledata002.js";
-    } else {
         return "timetabledata_10012018.js";
+    } else {
+        return "timetabledata_10032018.js";
     }
 
 };
