@@ -29,6 +29,7 @@
 </script>
   
 	<script type="text/javascript">
+
 	function startTime() {
 		var today = new Date();
 		var h = today.getHours();
@@ -103,7 +104,7 @@ if (typeof(initServiceId) !== "undefined"){
               $.each(timetabledata, function(key, val){
                 if (val.serviceId.search(myExp) != -1) {
 				  if(val.order == 0){
-					output += '<h2 onclick="ThisService(' + val.serviceId + ')">' + val.serviceId + '</h2>';
+					output += '<h2 onclick="ThisService(\'' + val.serviceId + '\')">' + val.serviceId + '</h2>';
 				  }
 				output += '</div>';
 			}})}
@@ -167,7 +168,7 @@ if (typeof(initServiceId) !== "undefined"){
 		</div>
 		<form role="form">
 			<div class="form-group">
-				<input type="number" class="form-control input-lg" id="search" placeholder="enter service number" style="margin-top:115px; box-sizing: border-box; margin-left: 10px; margin-right: 10px; width: calc(100% - 20px);">
+				<input type="string" class="form-control input-lg" id="search" placeholder="enter service number" style="margin-top:115px; box-sizing: border-box; margin-left: 10px; margin-right: 10px; width: calc(100% - 20px);">
 			</div>
 		</form>
 		<div id="results"></div>
