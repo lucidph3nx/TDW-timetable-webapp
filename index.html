@@ -25,6 +25,17 @@ function startTime() {
 	var now = moment();
 	document.getElementById('clock').innerHTML = now.format("HH:mm:ss")
 	document.getElementById('timetableupdated').innerHTML = timetableupdated
+	var AMPeakStart = moment("03:00", "HH:mm");
+	var AMPeakEnd = moment("09:00", "HH:mm");
+	var PMPeakStart = moment("15:00", "HH:mm");
+	var PMPeakEnd = moment("18:30", "HH:mm");
+	if (now > AMPeakStart && now < AMPeakEnd) {
+		document.getElementById('peakoffpeak').innerHTML = "Peak Fares Apply"
+	} else if (now > PMPeakStart && now < PMPeakEnd) {
+		document.getElementById('peakoffpeak').innerHTML = "Peak Fares Apply"
+	} else {
+		document.getElementById('peakoffpeak').innerHTML = "Off Peak Fares Apply"
+	}
 	renderResults(now)
 	var t = setTimeout(startTime, 500);
 }
@@ -63,10 +74,10 @@ function renderResults(now){
 	var searchField = $('#search').val();
 	var searchFieldLength = searchField.length
 	var serviceIdRegEx = new RegExp(searchField, "i");
-	if (searchFieldLength < 4) {
+	if (searchFieldLength == 0) {
+	} else if (searchFieldLength < 4) {
 		renderServiceList(serviceIdRegEx)
-	}
-	if (searchFieldLength > 3) {
+	} else if (searchFieldLength > 3) {
 		renderTimetable(serviceIdRegEx)
 	};
 	function renderServiceList(serviceIdRegEx){
@@ -93,7 +104,8 @@ function renderResults(now){
 			stations = timetabledata.filter((tp) => tp.serviceId == val.serviceId)
 			stationCount = stations.length
 			if ((now > WarningStartTime) && (now < WarningEndTime) && val.timingPoint == true && (val.order +1 !== stationCount)) {
-				output += '<h3 class="'+flashClass+'">WARNING do not depart '+val.stationId+' until '+val.time+'</h3>';
+				output += '<h3 class="'+flashClass+'">WARNING</h3>';
+				output += '<h3 class="'+flashClass+'">Do not depart '+val.stationId+' until '+val.time+'</h3>';
 			}
 		}
 	});
@@ -157,7 +169,6 @@ $(document).ready(function() {
 			background-size: contain;
 		}
 	</style>
-
 	<div class="text-center">
 		<div style="font-size:75px">
 			<div id="clock" style="position:fixed;width:100%;top:0px;height:115px;background-color:white"></div>
@@ -167,6 +178,7 @@ $(document).ready(function() {
 				<input type="string" class="form-control input-lg" id="search" placeholder="enter service number" style="margin-top:115px; box-sizing: border-box; margin-left: 10px; margin-right: 10px; width: calc(100% - 20px);">
 			</div>
 		</form>
+		<div id="peakoffpeak"></div>
 		<div id="results"></div>
 		<div id="timetableupdated" style="font-size:10px" ></div>
 	</div>
