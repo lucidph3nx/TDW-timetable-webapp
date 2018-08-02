@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/main.css">
   <script src="js/jquery-1.10.2.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script src="js/moment.js"></script>
   <script src="currentTimetable.js"></script>
 
 <script>
@@ -16,63 +17,22 @@
 	var js = document.createElement("script");
 	js.src = getCurrentTimetable()
 	head.appendChild(js);
+	var flashClass
 </script>
 
-<script>
-	//google analytics script
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-83419656-1', 'auto');
-  ga('send', 'pageview');
-</script>
-  
-	<script type="text/javascript">
+<script type="text/javascript">
+function startTime() {
+	var now = moment();
+	document.getElementById('clock').innerHTML = now.format("HH:mm:ss")
+	document.getElementById('timetableupdated').innerHTML = timetableupdated
+	renderResults(now)
+	var t = setTimeout(startTime, 500);
+}
 
-	function startTime() {
-		var today = new Date();
-		var h = today.getHours();
-		var m = today.getMinutes();
-		var s = today.getSeconds();
-		h = checkTime(h)
-		m = checkTime(m);
-		s = checkTime(s);
-		document.getElementById('clock').innerHTML =
-		h + ":" + m + ":" + s;
-		document.getElementById('timetableupdated').innerHTML = timetableupdated
-
-		$('td[id^="time"]').each(function(i) {
-			var checktime1 = this.innerHTML
-			var checktime2 = h + ":" + m + ":" + s
-			if (checktime2 > checktime1) {
-				this.style.color = "red";
-			}
-		});
-		var t = setTimeout(startTime, 500);
-	}
-	function checkTime(i) {
-		if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-		return i;
-	}
-	
-	function ThisService(ServiceNo) {
-		document.getElementById('search').value = ServiceNo;
-		$('#search').keyup();
-	}
-	
-	function dateCompare(time1,time2) {
-	  var t1 = new Date();
-	  var parts = time1.split(":");
-	  t1.setHours(parts[0],parts[1],parts[2],0);
-	  var t2 = new Date();
-	  parts = time2.split(":");
-	  t2.setHours(parts[0],parts[1],parts[2],0);
-	  // returns 1 if greater, -1 if less and 0 if the same
-	  if (t1.getTime()>t2.getTime()) return 1;
-	  if (t1.getTime()<t2.getTime()) return -1;
-	  return 0;
-	}
+function selectThisService(ServiceNo) {
+	document.getElementById('search').value = ServiceNo;
+	$('#search').keyup();
+}
 
 //get param from url for service number
 function getParamValue(paramName){
@@ -88,67 +48,103 @@ function getParamValue(paramName){
 var initServiceId = getParamValue('serviceId');
 
 function takeInitServiceId(){
-if (typeof(initServiceId) !== "undefined"){
-	ThisService(initServiceId);
-};
+	if (typeof(initServiceId) !== "undefined"){
+		selectThisService(initServiceId);
+	};
 };
 
-      $(window).load(function(){
-        $('#search').keyup(function(){
-            var searchField = $('#search').val();
-			var searchFieldLength = searchField.length
-            var myExp = new RegExp(searchField, "i");
-            var output = '<div>';
-			
-			if (searchFieldLength < 4) {
-              $.each(timetabledata, function(key, val){
-                if (val.serviceId.search(myExp) != -1) {
-				  if(val.order == 0){
-					output += '<h2 onclick="ThisService(\'' + val.serviceId + '\')">' + val.serviceId + '</h2>';
-				  }
-				output += '</div>';
-			}})}
-			if (searchFieldLength > 3) {
-					$.each(timetabledata, function(key, val){
-						if (val.serviceId.search(myExp) != -1) {
-							if(val.order == 0){
-								output += '<p>' + val.fareType + ' fares</p>';
-								if(val.bikeExclusion){
-									output += '<strong><p>Bikes cannot be carried on this service</p></strong>';
-								}
-								if(val.crossingBoolean){
-									output += '<table class="table table-condensed">';
-									output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Crossing</th><th style="text-align:center">Timetable</th></tr></thead>';
-								} else {
-									output += '<table class="table table-condensed">';
-									output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Timetable</th></tr></thead>';
-								};
-							}
-							if(val.crossingBoolean){
-								output += '<tr><td>' + val.stationId + '</td><td id="time">' + val.crossingDetail + '</td><td id="time">' + val.time + '</td></tr>';
-							} else {
-								output += '<tr><td>' + val.stationId + '</td><td id="time">' + val.time + '</td></tr>';
-							};
-						}
-					});
-					output += '</table></div>';
-			  	$('#search').blur();
-			  };
-        $('#results').html(output);
+function renderResults(now){
 
-        });
-      });
-	  
-	  $(document).ready(function() {
-    $('#search').keydown(function(event) {
-        if (event.keyCode == 13) {
-          $('#search').blur();
-					$('#results').focus();
-         }
-    });
+	if (flashClass == "nonflashclass"){
+		flashClass = "flashclass"
+	} else {
+		flashClass = "nonflashclass"
+	}
+	var searchField = $('#search').val();
+	var searchFieldLength = searchField.length
+	var serviceIdRegEx = new RegExp(searchField, "i");
+	if (searchFieldLength < 4) {
+		renderServiceList(serviceIdRegEx)
+	}
+	if (searchFieldLength > 3) {
+		renderTimetable(serviceIdRegEx)
+	};
+	function renderServiceList(serviceIdRegEx){
+			var output = '<div>';
+				$.each(timetabledata, function(key, val){
+				if (val.serviceId.search(serviceIdRegEx) != -1) {
+					if(val.order == 0){
+					output += '<h2 onclick="selectThisService(\'' + val.serviceId + '\')">' + val.serviceId + '</h2>';
+					}
+			}})
+			output += '</div>';
+			$('#results').html(output);
+		}
+	function renderTimetable(serviceIdRegEx){
+	var output = '<div>';
+	$.each(timetabledata, function(key, val){
+		if (val.serviceId.search(serviceIdRegEx) != -1) {
+			var WarningStart = 60 // 60 sec before
+			var WarningEnd = 30 // 30 sec before
+			var WarningStartTime = moment(val.time, "HH:mm")
+			WarningStartTime.subtract(WarningStart, "seconds")
+			var WarningEndTime = moment(val.time, "HH:mm")
+			WarningEndTime.subtract(WarningEnd, "seconds")
+			stations = timetabledata.filter((tp) => tp.serviceId == val.serviceId)
+			stationCount = stations.length
+			if ((now > WarningStartTime) && (now < WarningEndTime) && val.timingPoint == true && (val.order +1 !== stationCount)) {
+				output += '<h3 class="'+flashClass+'">WARNING do not depart '+val.stationId+' until '+val.time+'</h3>';
+			}
+		}
 	});
+	$.each(timetabledata, function(key, val){
+		if (val.serviceId.search(serviceIdRegEx) != -1) {
+			timetableTime = moment(val.time, "HH:mm")
+			if (timetableTime < now) {
+				timeClass = "timePassed"
+			} else {
+				timeClass = "timeNotPassed"
+			}
+			if(val.order == 0){
+				if(val.bikeExclusion){
+					output += '<strong><p>Bikes cannot be carried on this service</p></strong>';
+				}
+				if(val.crossingBoolean){
+					output += '<table class="table table-condensed">';
+					output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Crossing</th><th style="text-align:center">Timetable</th></tr></thead>';
+				} else {
+					output += '<table class="table table-condensed">';
+					output += '<thead><tr><th style="text-align:center">Station</th><th style="text-align:center">Timetable</th></tr></thead>';
+				};
+			}
+			if(val.crossingBoolean){
+				output += '<tr><td>' + val.stationId + '</td><td>' + val.crossingDetail + '</td><td class="' + timeClass + '">' + val.time + '</td></tr>';
+			} else {
+				output += '<tr><td>' + val.stationId + '</td><td class="' + timeClass + '">' + val.time + '</td></tr>';
+			};
 
-	</script>
+		}
+	});
+	output += '</table></div>';
+	$('#results').html(output);
+};
+}
+
+$(window).load(function(){
+	$('#search').keyup(function(){
+		renderResults()
+	});
+});
+	  
+$(document).ready(function() {
+	$('#search').keydown(function(event) {
+		if (event.keyCode == 13) {
+			$('#search').blur();
+			$('#results').focus();
+		}
+	});
+});
+</script>
 </head>
 
 <body onload="startTime(); takeInitServiceId();">
