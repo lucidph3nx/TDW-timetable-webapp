@@ -96,7 +96,7 @@ function renderResults(now){
 	$.each(timetabledata, function(key, val){
 		if (val.serviceId.search(serviceIdRegEx) != -1) {
 			var WarningStart = 60 // 60 sec before
-			var WarningEnd = 30 // 30 sec before
+			var WarningEnd = 20 // 20 sec before
 			var WarningStartTime = moment(val.time, "HH:mm")
 			WarningStartTime.subtract(WarningStart, "seconds")
 			var WarningEndTime = moment(val.time, "HH:mm")
