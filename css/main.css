@@ -8,7 +8,7 @@ body {
 }
 
 .flashclass{
-    background-color: black;
+    background-color: #8B0000;
     color: white;
 }
 
@@ -19,5 +19,5 @@ h3 {
 
 .nonflashclass{
     background-color: white;
-    color: black;
+    color: #8B0000;
 }
