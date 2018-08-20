@@ -101,7 +101,8 @@ function renderResults(now){
 			WarningStartTime.subtract(WarningStart, "seconds")
 			var WarningEndTime = moment(val.time, "HH:mm")
 			WarningEndTime.subtract(WarningEnd, "seconds")
-			stations = timetabledata.filter((tp) => tp.serviceId == val.serviceId)
+			//stations = timetabledata.filter((tp) => tp.serviceId == val.serviceId)
+			stations = timetabledata.filter(function(tp) {if(tp.serviceId == val.serviceId){return true}})
 			stationCount = stations.length
 			if ((now > WarningStartTime) && (now < WarningEndTime) && val.timingPoint == true && (val.order +1 !== stationCount)) {
 				output += '<h3 class="'+flashClass+'">WARNING</h3>';
@@ -143,6 +144,8 @@ function renderResults(now){
 }
 
 $(window).load(function(){
+	startTime();
+	takeInitServiceId();
 	$('#search').keyup(function(){
 		renderResults()
 	});
@@ -159,7 +162,7 @@ $(document).ready(function() {
 </script>
 </head>
 
-<body onload="startTime(); takeInitServiceId();">
+<body>
 	<style>
 		body {
 			background: url(img/background.jpg) no-repeat center center fixed;
