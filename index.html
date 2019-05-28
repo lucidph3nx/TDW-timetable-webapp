@@ -74,7 +74,9 @@ function renderResults(now){
 	var searchField = $('#search').val();
 	var searchFieldLength = searchField.length
 	var serviceIdRegEx = new RegExp(searchField, "i");
-	if (searchFieldLength == 0) {
+	if (searchField.includes('?') == true) {
+		renderError()
+	} else if	(searchFieldLength == 0) {
 	} else if (searchFieldLength < 4) {
 		renderServiceList(serviceIdRegEx)
 	} else if (searchFieldLength > 3) {
@@ -89,6 +91,10 @@ function renderResults(now){
 					}
 			}})
 			output += '</div>';
+			$('#results').html(output);
+		}
+		function renderError(){
+			let output = '<strong><p style="color:red">INVALID SERVICE ID</p></strong>'
 			$('#results').html(output);
 		}
 	function renderTimetable(serviceIdRegEx){
