@@ -22,21 +22,24 @@
 
 <script type="text/javascript">
 function startTime() {
-	var now = moment();
-	document.getElementById('clock').innerHTML = now.format("HH:mm:ss")
+	document.getElementById('clock').innerHTML = moment().format("HH:mm:ss")
 	document.getElementById('timetableupdated').innerHTML = timetableupdated
-	var AMPeakStart = moment("03:00", "HH:mm");
-	var AMPeakEnd = moment("09:00", "HH:mm");
-	var PMPeakStart = moment("15:00", "HH:mm");
-	var PMPeakEnd = moment("18:30", "HH:mm");
-	if (now > AMPeakStart && now < AMPeakEnd) {
+	const hoursAMPeak = {
+		start: moment("03:00", "HH:mm"),
+		end: moment("03:00", "HH:mm"),
+	}
+	const hoursPMPeak = {
+		start: moment("15:00", "HH:mm"),
+		end: moment("18:30", "HH:mm"),
+	}
+	if (moment().isBetween(hoursAMPeak.start, hoursAMPeak.end)) {
 		document.getElementById('peakoffpeak').innerHTML = "Peak Fares Apply"
-	} else if (now > PMPeakStart && now < PMPeakEnd) {
+	} else if (moment().isBetween(hoursPMPeak.start, hoursPMPeak.end)) {
 		document.getElementById('peakoffpeak').innerHTML = "Peak Fares Apply"
 	} else {
 		document.getElementById('peakoffpeak').innerHTML = "Off Peak Fares Apply"
 	}
-	renderResults(now)
+	renderResults(moment())
 	var t = setTimeout(startTime, 500);
 }
 
@@ -65,7 +68,7 @@ function takeInitServiceId(){
 };
 
 function renderResults(now){
-
+	// toggle that allows time to flash
 	if (flashClass == "nonflashclass"){
 		flashClass = "flashclass"
 	} else {
